@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Unique identifier for this Launch Agent -->
+    <key>Label</key>
+    <string>com.jarvis.assistant</string>
+
+    <!-- Path to Python and the run.py script — setup.sh fills these in automatically -->
+    <key>ProgramArguments</key>
+    <array>
+        <string>PYTHON_PATH_PLACEHOLDER</string>
+        <string>PROJECT_PATH_PLACEHOLDER/run.py</string>
+    </array>
+
+    <!-- Run once at login -->
+    <key>RunAtLoad</key>
+    <true/>
+
+    <!-- Redirect logs for debugging -->
+    <key>StandardOutPath</key>
+    <string>PROJECT_PATH_PLACEHOLDER/logs/jarvis.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>PROJECT_PATH_PLACEHOLDER/logs/jarvis_error.log</string>
+
+    <!-- Wait 10 seconds after login before speaking (lets the desktop fully load) -->
+    <key>StartInterval</key>
+    <integer>0</integer>
+
+    <key>ThrottleInterval</key>
+    <integer>10</integer>
+</dict>
+</plist>
