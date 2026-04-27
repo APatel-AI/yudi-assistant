@@ -10,8 +10,8 @@ voice:
   voice: "Daniel"  # macOS voice name — run `say -v ?` in terminal to list all voices
 
 weather:
-  city: "Chicago"    # Your city name
-  country_code: "US" # ISO country code
+  city: "Stockbridge"  # Your city name
+  country_code: "US"   # ISO country code
   units: "imperial"  # imperial = °F | metric = °C
 
 alarms:
