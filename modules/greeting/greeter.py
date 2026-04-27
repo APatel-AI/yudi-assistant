@@ -19,6 +19,6 @@ def get_time_of_day() -> str:
         return "good night"
 
 
-def build(name: str) -> str:
+def build() -> str:
     period = get_time_of_day()
-    return f"Hello {name}, {period}."
+    return f"Hello Sir, {period}."

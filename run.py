@@ -32,7 +32,7 @@ def main():
     lines = []
 
     if modules_on.get("greeting", True):
-        lines.append(build_greeting(name))
+        lines.append(build_greeting())
 
     if modules_on.get("ram", True):
         lines.append(get_pressure())
