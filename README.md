@@ -6,9 +6,17 @@ No Electron. No menu bar bloat. One Python process that runs, speaks, and exits.
 
 ---
 
+## When It Runs
+
+| Event | Speaks? |
+|---|---|
+| Login (after boot or log out) | Yes — via Launch Agent |
+| Wake from sleep | Yes — via sleepwatcher |
+| Lock screen unlock | No |
+
 ## What It Says
 
-On each login (after a 10-second delay to let the desktop load):
+On each login or wake from sleep:
 
 > *"Hello Arpan, good morning. RAM pressure is normal. The current Central time is 8:45 AM, and 9:45 AM Eastern. Currently in Chicago it's 62 degrees Fahrenheit, partly cloudy, and feels like 59. Air quality is good."*
 
@@ -23,7 +31,10 @@ jarvis/
 ├── .env                            # Secret API keys — never commit this
 ├── .env.example                    # Template for .env
 ├── requirements.txt                # Python dependencies
-├── setup.sh                        # One-time install + login agent registration
+├── setup.sh                        # One-time install + login agent + sleepwatcher registration
+│
+├── scripts/
+│   └── wakeup.sh                   # Called by sleepwatcher on every wake — symlinked to ~/.wakeup
 │
 ├── core/
 │   ├── config.py                   # Loads config.yaml + .env
@@ -168,8 +179,13 @@ cat logs/jarvis_error.log
 ## Uninstalling
 
 ```bash
+# Remove login agent
 launchctl unload ~/Library/LaunchAgents/com.jarvis.assistant.plist
 rm ~/Library/LaunchAgents/com.jarvis.assistant.plist
+
+# Remove sleep/wake hook
+brew services stop sleepwatcher
+rm ~/.wakeup
 ```
 
 The project folder and `.venv` can then be deleted manually.
