@@ -1,11 +1,9 @@
 """
 Reports macOS RAM pressure level: normal, warning, or critical.
 Uses the built-in `memory_pressure` CLI tool — accurate for Apple Silicon.
-Falls back to psutil usage percent if the tool is unavailable.
 """
 
 import subprocess
-import psutil
 
 
 def get_pressure() -> str:
@@ -26,6 +24,4 @@ def get_pressure() -> str:
             level = "normal"
         return f"RAM pressure is {level}."
     except Exception:
-        # Fallback: psutil percentage
-        percent = psutil.virtual_memory().percent
-        return f"RAM usage is at {percent:.0f} percent."
+        return "RAM pressure is unavailable."
