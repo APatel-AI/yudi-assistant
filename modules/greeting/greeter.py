@@ -1,6 +1,6 @@
 """
 Builds a time-aware greeting.
-e.g. "Hello Arpan, good morning."
+e.g. "Hello Sir, good morning."
 """
 
 from datetime import datetime

@@ -5,8 +5,8 @@ user:
   name: "Arpan"
 
 voice:
-  rate: 175          # words per minute (default macOS is ~175)
-  voice: "Samantha"  # macOS voice name — run `say -v ?` in terminal to list all voices
+  rate: 160          # words per minute (default macOS is ~175)
+  voice: "Daniel"  # macOS voice name — run `say -v ?` in terminal to list all voices
 
 weather:
   city: "Chicago"    # Your city name
