@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.jarvis.morning</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>PYTHON_PATH_PLACEHOLDER</string>
+        <string>PROJECT_PATH_PLACEHOLDER/alarm.py</string>
+        <string>morning</string>
+    </array>
+
+    <!-- Fires daily at the configured morning alarm time -->
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>MORNING_HOUR_PLACEHOLDER</integer>
+        <key>Minute</key>
+        <integer>MORNING_MINUTE_PLACEHOLDER</integer>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>PROJECT_PATH_PLACEHOLDER/logs/jarvis.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>PROJECT_PATH_PLACEHOLDER/logs/jarvis_error.log</string>
+</dict>
+</plist>

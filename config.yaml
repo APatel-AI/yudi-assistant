@@ -3,6 +3,7 @@
 
 user:
   name: "Arpan"
+  timezone: "America/New_York"  # Used for greetings and alarm time display
 
 voice:
   rate: 160          # words per minute (default macOS is ~175)
@@ -12,6 +13,16 @@ weather:
   city: "Chicago"    # Your city name
   country_code: "US" # ISO country code
   units: "imperial"  # imperial = °F | metric = °C
+
+alarms:
+  morning:
+    enabled: true
+    hour: 4
+    minute: 30
+  evening:
+    enabled: true
+    hour: 20
+    minute: 0
 
 modules:
   greeting: true

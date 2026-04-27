@@ -81,14 +81,66 @@ else
     fi
 fi
 
+# 9. Register morning + evening alarm agents
+echo "==> Registering alarm agents..."
+
+# Parse alarm times from config.yaml
+MORNING_HOUR=$("$VENV_PYTHON" -c "import yaml; c=yaml.safe_load(open('$PROJECT_DIR/config.yaml')); print(c['alarms']['morning']['hour'])")
+MORNING_MINUTE=$("$VENV_PYTHON" -c "import yaml; c=yaml.safe_load(open('$PROJECT_DIR/config.yaml')); print(c['alarms']['morning']['minute'])")
+EVENING_HOUR=$("$VENV_PYTHON" -c "import yaml; c=yaml.safe_load(open('$PROJECT_DIR/config.yaml')); print(c['alarms']['evening']['hour'])")
+EVENING_MINUTE=$("$VENV_PYTHON" -c "import yaml; c=yaml.safe_load(open('$PROJECT_DIR/config.yaml')); print(c['alarms']['evening']['minute'])")
+
+echo "    Morning alarm: $(printf '%02d:%02d' $MORNING_HOUR $MORNING_MINUTE)"
+echo "    Evening alarm: $(printf '%02d:%02d' $EVENING_HOUR $EVENING_MINUTE)"
+
+for ALARM in morning evening; do
+    SRC="$PROJECT_DIR/launchagent/com.jarvis.$ALARM.plist"
+    DEST="$LAUNCH_AGENTS_DIR/com.jarvis.$ALARM.plist"
+
+    sed \
+        -e "s|PYTHON_PATH_PLACEHOLDER|$VENV_PYTHON|g" \
+        -e "s|PROJECT_PATH_PLACEHOLDER|$PROJECT_DIR|g" \
+        -e "s|MORNING_HOUR_PLACEHOLDER|$MORNING_HOUR|g" \
+        -e "s|MORNING_MINUTE_PLACEHOLDER|$MORNING_MINUTE|g" \
+        -e "s|EVENING_HOUR_PLACEHOLDER|$EVENING_HOUR|g" \
+        -e "s|EVENING_MINUTE_PLACEHOLDER|$EVENING_MINUTE|g" \
+        "$SRC" > "$DEST"
+
+    launchctl unload "$DEST" 2>/dev/null || true
+    launchctl load "$DEST"
+    echo "    Loaded com.jarvis.$ALARM"
+done
+
+# 10. Schedule Mac wake 2 minutes before morning alarm (so launchd can fire it from sleep)
+echo "==> Scheduling daily Mac wake before morning alarm..."
+WAKE_MINUTE=$((MORNING_MINUTE - 2))
+WAKE_HOUR=$MORNING_HOUR
+if [ $WAKE_MINUTE -lt 0 ]; then
+    WAKE_MINUTE=$((60 + WAKE_MINUTE))
+    WAKE_HOUR=$((MORNING_HOUR - 1))
+fi
+WAKE_TIME=$(printf "%02d:%02d:00" $WAKE_HOUR $WAKE_MINUTE)
+echo "    sudo pmset repeat wake MTWRFSU $WAKE_TIME"
+sudo pmset repeat wake MTWRFSU $WAKE_TIME && \
+    echo "    Mac will wake at $WAKE_TIME daily." || \
+    echo "    WARNING: pmset failed. Morning alarm may not fire from sleep. Try running manually with sudo."
+
 echo ""
 echo "✓ Jarvis is set up."
 echo "  - Speaks on login (Launch Agent)"
 echo "  - Speaks on wake from sleep (sleepwatcher)"
+echo "  - Morning alarm at $(printf '%02d:%02d' $MORNING_HOUR $MORNING_MINUTE) (Mac wakes at $WAKE_TIME)"
+echo "  - Evening reminder at $(printf '%02d:%02d' $EVENING_HOUR $EVENING_MINUTE)"
 echo ""
-echo "To test it right now, run:"
-echo "  $VENV_PYTHON $PROJECT_DIR/run.py"
+echo "To test alarms right now:"
+echo "  $VENV_PYTHON $PROJECT_DIR/alarm.py morning"
+echo "  $VENV_PYTHON $PROJECT_DIR/alarm.py evening"
+echo ""
+echo "To change alarm times: edit config.yaml then re-run ./setup.sh"
 echo ""
 echo "To uninstall:"
 echo "  launchctl unload $PLIST_DEST && rm $PLIST_DEST"
+echo "  launchctl unload $LAUNCH_AGENTS_DIR/com.jarvis.morning.plist && rm $LAUNCH_AGENTS_DIR/com.jarvis.morning.plist"
+echo "  launchctl unload $LAUNCH_AGENTS_DIR/com.jarvis.evening.plist && rm $LAUNCH_AGENTS_DIR/com.jarvis.evening.plist"
+echo "  sudo pmset repeat cancel"
 echo "  brew services stop sleepwatcher && rm ~/.wakeup"
